@@ -1,1 +1,356 @@
-..
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gala Invitation...</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
+
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --text-main: #ffffff;
+            --text-muted: #b0b8c1;
+            --accent-1: #f72585; 
+            --accent-2: #7209b7; 
+            --accent-3: #3a0ca3; 
+            --glass-bg: rgba(20, 25, 40, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden; 
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+            color: var(--text-main);
+            color-scheme: dark; 
+        }
+
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+            animation: complexFloat 14s infinite ease-in-out alternate;
+            pointer-events: none; 
+        }
+
+        .blob-1 { top: -5%; left: -5%; width: 400px; height: 400px; background: var(--accent-2); }
+        .blob-2 { bottom: -10%; right: -5%; width: 450px; height: 450px; background: var(--accent-1); animation-delay: -7s; }
+        .blob-3 { top: 50%; left: 40%; width: 350px; height: 350px; background: var(--accent-3); animation-duration: 20s; }
+
+        @keyframes complexFloat {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(60px, -60px) scale(1.1) rotate(15deg); }
+            100% { transform: translate(-30px, 30px) scale(1) rotate(0deg); }
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 55px 40px;
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+            overflow: hidden; 
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeInScale 0.9s cubic-bezier(0.25, 1, 0.25, 1);
+            margin: auto;
+        }
+
+        .card::before, .card::after {
+            content: ''; position: absolute; inset: -5px; z-index: -1;
+            background: conic-gradient(from var(--gradient-angle), var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            border-radius: inherit;
+            animation: cardGlow 6s linear infinite alternate, rotateGradient 10s linear infinite;
+        }
+
+        @property --gradient-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        @keyframes rotateGradient { 0% { --gradient-angle: 0deg; } 100% { --gradient-angle: 360deg; } }
+        @keyframes cardGlow {
+            0% { box-shadow: 0 0 10px rgba(247, 37, 133, 0.3), 0 0 15px rgba(114, 9, 183, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(247, 37, 133, 0.5), 0 0 30px rgba(114, 9, 183, 0.5); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif; color: var(--text-main);
+            margin-bottom: 15px; font-size: 2.3rem; line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+
+        p { color: var(--text-muted); margin-bottom: 35px; font-size: 1.05rem; font-weight: 300; }
+
+        .icon-container { margin-bottom: 25px; animation: refinedFloat 3s ease-in-out infinite; }
+        .icon-container span {
+            font-size: 5.5rem;
+            background: conic-gradient(from var(--gradient-angle), var(--accent-1), #ff758f, var(--accent-2), var(--accent-1));
+            animation: rotateGradient 10s linear infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(247, 37, 133, 0.4));
+        }
+
+        @keyframes refinedFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.02); }
+        }
+
+        .btn-container { display: flex; justify-content: center; gap: 20px; position: relative; height: 55px; }
+        
+        button {
+            padding: 12px 35px; font-size: 1.1rem; font-weight: 600;
+            border: none; border-radius: 30px; cursor: pointer; z-index: 20;
+            font-family: 'Outfit', sans-serif; display: flex; align-items: center;
+            justify-content: center; gap: 8px; transition: all 0.3s ease;
+        }
+
+        #btn-sim {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white; box-shadow: 0 0 20px rgba(247, 37, 133, 0.4);
+        }
+        #btn-sim:active { transform: scale(0.95); }
+
+        #btn-nao {
+            background: rgba(255, 255, 255, 0.05); color: var(--text-muted);
+            border: 1px solid var(--glass-border); backdrop-filter: blur(5px);
+            position: absolute;
+            transition: left 0.3s ease-out, top 0.3s ease-out, transform 0.3s ease;
+        }
+
+        .hidden { display: none !important; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; }
+        label span { font-size: 1.2rem; color: var(--accent-1); }
+
+        input, select, textarea {
+            width: 100%; padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border);
+            border-radius: 18px; color: var(--text-main); outline: none;
+            font-family: 'Outfit', sans-serif; font-size: 16px; 
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        select option { background: var(--bg-color); color: var(--text-main); }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-1); background: rgba(0, 0, 0, 0.5); }
+
+        #btn-enviar {
+            background: white; color: var(--bg-color); width: 100%; margin-top: 10px;
+            padding: 16px; border-radius: 18px; font-size: 1.1rem; font-weight: 700;
+        }
+
+        .detalhes-finais {
+            background: rgba(0, 0, 0, 0.4); padding: 25px; border-radius: 20px;
+            margin-top: 25px; border: 1px solid var(--glass-border); text-align: left; position: relative;
+        }
+        .pass-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; position: relative; z-index: 2; }
+        .pass-section:last-child { margin-bottom: 0; }
+        .pass-item strong { color: var(--accent-1); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 4px; }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .card { padding: 40px 20px; border-radius: 24px; }
+            h1 { font-size: 1.8rem; }
+            p { font-size: 1rem; margin-bottom: 25px; }
+            .icon-container span { font-size: 4.5rem; }
+            .btn-container { gap: 15px; }
+            button { padding: 12px 25px; font-size: 1rem; }
+            .pass-section { grid-template-columns: 1fr; gap: 25px; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div id="tela-convite" class="card">
+        <div class="icon-container">
+            <span class="material-symbols-rounded">favorite</span>
+        </div>
+        <h1>Gostaria de sair comigo?</h1>
+        <p>Prometo que a noite será uma verdadeira gala de meia-noite. Aceitas?</p>
+        
+        <div class="btn-container">
+            <button id="btn-sim">SIM! <span class="material-symbols-rounded">auto_awesome</span></button>
+            <button id="btn-nao">Não</button>
+        </div>
+    </div>
+
+    <div id="tela-opcoes" class="card hidden">
+        <div class="icon-container">
+            <span class="material-symbols-rounded">magic_button</span>
+        </div>
+        <h1>Perfeito! 😍</h1>
+        <p>Agora personalize como e quando prefere:</p>
+        
+        <form id="encontro-form">
+            <div class="form-group">
+                <label for="data"><span class="material-symbols-rounded">event</span> Que dia fica melhor?</label>
+                <input type="datetime-local" id="data" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo"><span class="material-symbols-rounded">local_bar</span> O que vamos fazer?</label>
+                <select id="tipo" required>
+                    <option value="" disabled selected>Selecione uma opção...</option>
+                    <option value="Jantar Noturno Gala">🍽️ Jantar Noturno Gala</option>
+                    <option value="Cinema VIP e Pipoca">🍿 Cinema VIP e Pipoca Premium</option>
+                    <option value="Bar de Drinks Exclusivo">🍸 Bar de Drinks Exclusivo</option>
+                    <option value="Passeio Lunar no Parque">✨ Passeio Lunar no Parque</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mensagem"><span class="material-symbols-rounded">chat</span> Mensagem Especial (opcional):</label>
+                <textarea id="mensagem" placeholder="Escreva algo fofo..."></textarea>
+            </div>
+
+            <button type="submit" id="btn-enviar">
+                Confirmar <span class="material-symbols-rounded">check_circle</span>
+            </button>
+        </form>
+    </div>
+
+    <div id="tela-confirmacao" class="card hidden">
+        <div class="icon-container">
+            <span class="material-symbols-rounded">wine_bar</span>
+        </div>
+        <h1>Combinadíssimo!</h1>
+        <p>Seu bilhete foi emitido e sua resposta foi enviada com sucesso.</p>
+        
+        <div class="detalhes-finais" id="resumo-encontro"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJ4dwA37W-plnqdI4a47e5dqlh39Hg1u8",
+            authDomain: "catalogo-de-filmes-73bd2.firebaseapp.com",
+            projectId: "catalogo-de-filmes-73bd2",
+            storageBucket: "catalogo-de-filmes-73bd2.firebasestorage.app",
+            messagingSenderId: "690101693243",
+            appId: "1:690101693243:web:31197e3dc6762e7a3b651e",
+            measurementId: "G-BBEB6DB7SW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const btnNao = document.getElementById('btn-nao');
+        const btnSim = document.getElementById('btn-sim');
+        const telaConvite = document.getElementById('tela-convite');
+        const telaOpcoes = document.getElementById('tela-opcoes');
+        const telaConfirmacao = document.getElementById('tela-confirmacao');
+        const form = document.getElementById('encontro-form');
+        const btnEnviar = document.getElementById('btn-enviar');
+        const inputData = document.getElementById('data');
+
+        const agora = new Date();
+        agora.setMinutes(agora.getMinutes() - agora.getTimezoneOffset());
+        inputData.min = agora.toISOString().slice(0, 16);
+
+        function desviarBotao() {
+            const padding = 30; 
+            const winWidth = window.innerWidth;
+            const winHeight = window.innerHeight;
+            const maxX = winWidth - btnNao.offsetWidth - padding;
+            const maxY = winHeight - btnNao.offsetHeight - padding;
+            const randomX = Math.max(padding, Math.min(Math.floor(Math.random() * maxX), maxX));
+            const randomY = Math.max(padding, Math.min(Math.floor(Math.random() * maxY), maxY));
+            const randomRotation = Math.floor(Math.random() * 40) - 20;
+
+            btnNao.style.position = 'fixed';
+            btnNao.style.left = randomX + 'px';
+            btnNao.style.top = randomY + 'px';
+            btnNao.style.transform = `rotate(${randomRotation}deg)`;
+        }
+
+        btnNao.addEventListener('mouseenter', desviarBotao);
+        btnNao.addEventListener('touchstart', (e) => { e.preventDefault(); desviarBotao(); });
+
+        btnSim.addEventListener('click', () => {
+            telaConvite.classList.add('hidden');
+            telaOpcoes.classList.remove('hidden');
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            btnEnviar.innerHTML = 'Salvando... <span class="material-symbols-rounded">hourglass_empty</span>';
+            btnEnviar.style.pointerEvents = 'none';
+
+            const dataEscolhida = document.getElementById('data').value;
+            const tipoEscolhido = document.getElementById('tipo').options[document.getElementById('tipo').selectedIndex].text;
+            const mensagemEscolhida = document.getElementById('mensagem').value;
+
+            try {
+                await addDoc(collection(db, "respostas"), {
+                    tipo: tipoEscolhido,
+                    data_encontro: dataEscolhida,
+                    mensagem: mensagemEscolhida,
+                    data_envio: new Date().toISOString()
+                });
+
+                const dataFormatada = new Date(dataEscolhida).toLocaleString('pt-BR', {
+                    weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                });
+                const dataText = dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1);
+
+                let passContent = `
+                    <div class="pass-section">
+                        <div class="pass-item">
+                            <strong><span class="material-symbols-rounded">stars</span> O que:</strong> 
+                            <span>${tipoEscolhido}</span>
+                        </div>
+                        <div class="pass-item">
+                            <strong><span class="material-symbols-rounded">schedule</span> Quando:</strong> 
+                            <span>${dataText}</span>
+                        </div>
+                    </div>
+                `;
+                if (mensagemEscolhida) {
+                    passContent += `
+                        <div class="pass-section">
+                            <div class="pass-item" style="grid-column: 1 / -1;">
+                                <strong><span class="material-symbols-rounded">chat_bubble</span> Mensagem:</strong> 
+                                <span style="font-style: italic; font-size: 0.95rem; color: var(--text-muted);">${mensagemEscolhida}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                document.getElementById('resumo-encontro').innerHTML = passContent;
+
+                telaOpcoes.classList.add('hidden');
+                telaConfirmacao.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Erro ao salvar:", error);
+                alert("Ops! Houve um erro ao salvar a resposta. Tente novamente.");
+                btnEnviar.innerHTML = 'Confirmar <span class="material-symbols-rounded">check_circle</span>';
+                btnEnviar.style.pointerEvents = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
