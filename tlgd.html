@@ -17,6 +17,7 @@
             --accent-2: #7209b7; 
             --glass-bg: rgba(20, 25, 40, 0.45);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #ff4d4d;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,24 +49,58 @@
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s;
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
         }
 
         .resposta-card:hover { transform: translateY(-5px); border-color: var(--accent-2); }
 
-        .linha { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
-        .linha:last-child { margin-bottom: 0; }
+        .linha { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; padding-right: 40px; transition: opacity 0.3s ease; }
+        .linha:last-of-type { margin-bottom: 0; }
         
         .icon { color: var(--accent-1); }
         .label { font-weight: 600; color: var(--text-muted); min-width: 90px; }
         .valor { font-weight: 400; color: var(--text-main); }
-        .msg-box { font-style: italic; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 10px; margin-top: 5px; }
+        .msg-box { font-style: italic; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 10px; margin-top: 5px; width: 100%; }
         
+        /* Lixeira Principal (Apaga Tudo) */
+        .btn-apagar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 77, 77, 0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-apagar:hover { background: var(--danger); color: white; box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); transform: scale(1.05); }
+
+        /* Botão Menor (Apaga só a mensagem) */
+        .btn-apagar-msg {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+        .btn-apagar-msg:hover { color: var(--danger); }
+
         .loader { text-align: center; color: var(--text-muted); margin-top: 50px; }
 
         @media (max-width: 480px) { 
             body { padding: 20px 15px; } 
-            .linha { flex-direction: column; gap: 2px; } 
+            .linha { flex-direction: column; gap: 2px; padding-right: 30px; } 
+            .btn-apagar { top: 15px; right: 15px; width: 32px; height: 32px; }
+            .cabecalho-msg { width: 100%; display: flex; justify-content: space-between; }
         }
     </style>
 </head>
@@ -79,7 +114,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // Importamos updateDoc e deleteField para poder apagar um campo específico de um documento
+        import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBJ4dwA37W-plnqdI4a47e5dqlh39Hg1u8",
@@ -107,8 +143,9 @@
 
                 let html = "";
                 
-                querySnapshot.forEach((doc) => {
-                    const dados = doc.data();
+                querySnapshot.forEach((documento) => {
+                    const dados = documento.data();
+                    const idDoc = documento.id;
                     
                     const dataEncontro = new Date(dados.data_encontro).toLocaleString('pt-BR', {
                         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -117,7 +154,10 @@
                     const dataEnvio = new Date(dados.data_envio).toLocaleString('pt-BR');
 
                     html += `
-                        <div class="resposta-card">
+                        <div class="resposta-card" id="card-${idDoc}">
+                            <button class="btn-apagar" data-id="${idDoc}" title="Apagar convite inteiro">
+                                <span class="material-symbols-rounded">delete</span>
+                            </button>
                             <div class="linha">
                                 <span class="material-symbols-rounded icon">event_available</span>
                                 <span class="label">Respondido em:</span>
@@ -133,11 +173,17 @@
                                 <span class="label">Quando:</span>
                                 <span class="valor">${dataEncontro}</span>
                             </div>
+                            
                             ${dados.mensagem ? `
-                            <div class="linha" style="flex-direction: column;">
-                                <div>
-                                    <span class="material-symbols-rounded icon" style="font-size: 1.2rem; vertical-align: middle;">chat</span>
-                                    <span class="label">Mensagem:</span>
+                            <div class="linha" style="flex-direction: column;" id="bloco-msg-${idDoc}">
+                                <div class="cabecalho-msg" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <div>
+                                        <span class="material-symbols-rounded icon" style="font-size: 1.2rem; vertical-align: middle;">chat</span>
+                                        <span class="label">Mensagem:</span>
+                                    </div>
+                                    <button class="btn-apagar-msg" data-id="${idDoc}" title="Apagar apenas a mensagem">
+                                        <span class="material-symbols-rounded" style="font-size: 1.2rem;">backspace</span>
+                                    </button>
                                 </div>
                                 <div class="valor msg-box">"${dados.mensagem}"</div>
                             </div>
@@ -148,9 +194,71 @@
 
                 container.innerHTML = html;
 
+                // Eventos para apagar TUDO
+                const botoesApagarTudo = document.querySelectorAll('.btn-apagar');
+                botoesApagarTudo.forEach(botao => botao.addEventListener('click', apagarCardInteiro));
+
+                // Eventos para apagar SÓ A MENSAGEM
+                const botoesApagarMsg = document.querySelectorAll('.btn-apagar-msg');
+                botoesApagarMsg.forEach(botao => botao.addEventListener('click', apagarSomenteMensagem));
+
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
-                container.innerHTML = `<div class='loader' style="color: #ff4d4d;">Erro ao carregar dados. Certifique-se de que o Firestore Database foi ativado no painel do Firebase em Modo de Teste.</div>`;
+                container.innerHTML = `<div class='loader' style="color: #ff4d4d;">Erro ao carregar dados. Verifique seu Firebase.</div>`;
+            }
+        }
+
+        // Função 1: Apaga o documento todo do banco de dados
+        async function apagarCardInteiro(e) {
+            const botao = e.currentTarget;
+            const idDoc = botao.getAttribute('data-id');
+
+            if (confirm("Tem certeza que deseja apagar o pedido INTEIRO?")) {
+                try {
+                    botao.innerHTML = '<span class="material-symbols-rounded">hourglass_empty</span>';
+                    await deleteDoc(doc(db, "respostas", idDoc));
+                    
+                    const card = document.getElementById(`card-${idDoc}`);
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.9) translateY(10px)';
+                    setTimeout(() => {
+                        card.remove();
+                        if (container.querySelectorAll('.resposta-card').length === 0) {
+                            container.innerHTML = "<div class='loader'>Ninguém respondeu ainda. Aguarde! 🕰️</div>";
+                        }
+                    }, 300);
+                } catch (error) {
+                    console.error("Erro ao apagar tudo:", error);
+                    alert("Erro ao apagar.");
+                    botao.innerHTML = '<span class="material-symbols-rounded">delete</span>';
+                }
+            }
+        }
+
+        // Função 2: Apaga apenas o campo "mensagem" do banco de dados
+        async function apagarSomenteMensagem(e) {
+            const botao = e.currentTarget;
+            const idDoc = botao.getAttribute('data-id');
+
+            if (confirm("Quer apagar APENAS o texto da mensagem e manter o encontro?")) {
+                try {
+                    botao.innerHTML = '<span class="material-symbols-rounded" style="font-size: 1.2rem;">hourglass_empty</span>';
+                    
+                    // Vai no Firebase e deleta especificamente o campo "mensagem"
+                    await updateDoc(doc(db, "respostas", idDoc), {
+                        mensagem: deleteField()
+                    });
+
+                    // Some com o bloco da mensagem na tela suavemente
+                    const blocoMsg = document.getElementById(`bloco-msg-${idDoc}`);
+                    blocoMsg.style.opacity = '0';
+                    setTimeout(() => blocoMsg.remove(), 300);
+
+                } catch (error) {
+                    console.error("Erro ao apagar mensagem:", error);
+                    alert("Erro ao remover a mensagem.");
+                    botao.innerHTML = '<span class="material-symbols-rounded" style="font-size: 1.2rem;">backspace</span>';
+                }
             }
         }
 
