@@ -277,21 +277,21 @@
             const btnWidth = btnNao.offsetWidth;
             const btnHeight = btnNao.offsetHeight;
 
-            // Margem de segurança generosa para compensar a rotação e as bordas
-            const padding = 50; 
+            // Margem de segurança menor para funcionar bem em celulares sem vazar a tela
+            const padding = 20; 
 
-            // Calcula o limite máximo na tela onde o botão pode ir
-            const maxLeft = winWidth - btnWidth - padding;
-            const maxTop = winHeight - btnHeight - padding;
+            // Calcula o limite máximo na tela, impedindo que o valor fique negativo
+            const maxLeft = Math.max(padding, winWidth - btnWidth - padding);
+            const maxTop = Math.max(padding, winHeight - btnHeight - padding);
 
-            // Sorteia uma posição estritamente entre o 'padding' (mínimo) e o 'max' (máximo)
+            // Sorteia uma posição estritamente entre o 'padding' e o limite máximo
             const randomLeft = Math.floor(Math.random() * (maxLeft - padding + 1)) + padding;
             const randomTop = Math.floor(Math.random() * (maxTop - padding + 1)) + padding;
 
-            // Rotação suave (entre -15 e 15 graus) para não distorcer tanto a caixa de clique
+            // Rotação suave (entre -15 e 15 graus)
             const randomRotation = Math.floor(Math.random() * 30) - 15;
 
-            // Aplica as novas posições
+            // Aplica as novas posições fixando na janela (viewport)
             btnNao.style.position = 'fixed';
             btnNao.style.left = `${randomLeft}px`;
             btnNao.style.top = `${randomTop}px`;
